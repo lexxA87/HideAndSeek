@@ -14,6 +14,27 @@ namespace HideAndSeekTests
         public void Initialize()
         {
             // You'll use this to create a bunch of locations before each test
+            center = new Location("Center room");
+            Assert.AreSame("Center room", center.ToString());
+            Assert.AreEqual(0, center.ExitList.Count());
+
+            center.AddExit(Direction.North, new Location("North Room"));
+            Assert.AreEqual(1, center.ExitList.Count());
+
+            center.AddExit(Direction.South, new Location("South Room"));
+            center.AddExit(Direction.East, new Location("East Room"));
+            center.AddExit(Direction.West, new Location("West Room"));
+            center.AddExit(Direction.Northeast, new Location("Northeast Room"));
+            center.AddExit(Direction.Northwest, new Location("Northwest Room"));
+            center.AddExit(Direction.Southwest, new Location("Southwest Room"));
+            center.AddExit(Direction.Southeast, new Location("Southeast Room"));
+            center.AddExit(Direction.Up, new Location("Up Room"));
+            center.AddExit(Direction.Down, new Location("Down Room"));
+            center.AddExit(Direction.In, new Location("In Room"));
+            center.AddExit(Direction.Out, new Location("Out Room"));
+
+            Assert.AreEqual(12, center.ExitList.Count());
+
         }
         /// <summary>
         /// Make sure GetExit returns the location in a direction only if it exists

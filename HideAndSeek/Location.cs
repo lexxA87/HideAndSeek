@@ -17,14 +17,32 @@
         /// The constructor sets the location name
         /// </summary>
         /// <param name="name">Name of the location</param>
-        public Location(string name) => throw new NotImplementedException();
+        public Location(string name) => Name = name;
 
         public override string ToString() => Name;
 
         /// <summary>
+        /// Describes a direction (e.g. "in" vs. "to the North")
+        /// </summary>
+        /// <param name="d">Direction to describe</param>
+        /// <returns>string describing the direction</returns>
+        private string DescribeDirection(Direction d) => d switch
+        {
+            Direction.Up => "Up",
+            Direction.Down => "Down",
+            Direction.In => "In",
+            Direction.Out => "Out",
+            _ => $"to the {d}",
+        };
+
+        /// <summary>
         /// Returns a sequence of descriptions of the exits, sorted by direction
         /// </summary>
-        public IEnumerable<string> ExitList => throw new NotImplementedException();
+        public IEnumerable<string> ExitList =>
+            Exits
+            .OrderBy(keyValuePair => (int)keyValuePair.Key)
+            .OrderBy(keyValuePair => Math.Abs((int)keyValuePair.Key))
+            .Select(keyValuePair => $"the {keyValuePair.Value} is {DescribeDirection(keyValuePair.Key)}");
 
         /// <summary>
         /// Adds an exit to this location
@@ -42,19 +60,5 @@
         /// <param name="direction">Direciton of the exit location</param>
         /// <returns>The exit location, or this if there is no exit in that direction</returns>
         public Location GetExit(Direction direction) => throw new NotImplementedException();
-
-        /// <summary>
-        /// Describes a direction (e.g. "in" vs. "to the North")
-        /// </summary>
-        /// <param name="d">Direction to describe</param>
-        /// <returns>string describing the direction</returns>
-        private string DescribeDirection(Direction d) => d switch
-        {
-            Direction.Up => "Up",
-            Direction.Down => "Down",
-            Direction.In => "In",
-            Direction.Out => "Out",
-            _ => $"to the {d}",
-        };
     }
 }
