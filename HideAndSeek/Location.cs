@@ -42,5 +42,19 @@
         /// <param name="direction">Direciton of the exit location</param>
         /// <returns>The exit location, or this if there is no exit in that direction</returns>
         public Location GetExit(Direction direction) => throw new NotImplementedException();
+
+        /// <summary>
+        /// Describes a direction (e.g. "in" vs. "to the North")
+        /// </summary>
+        /// <param name="d">Direction to describe</param>
+        /// <returns>string describing the direction</returns>
+        private string DescribeDirection(Direction d) => d switch
+        {
+            Direction.Up => "Up",
+            Direction.Down => "Down",
+            Direction.In => "In",
+            Direction.Out => "Out",
+            _ => $"to the {d}",
+        };
     }
 }
