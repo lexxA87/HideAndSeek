@@ -1,10 +1,9 @@
-﻿namespace HideAndSeek
+﻿using HideAndSeek;
+
+GameController gameController = new();
+while (true)
 {
-    internal class Program
-    {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello, World!");
-        }
-    }
+    Console.WriteLine(gameController.Status);
+    Console.Write(gameController.Prompt);
+    Console.WriteLine(gameController.ParseInput(Console.ReadLine()));
 }

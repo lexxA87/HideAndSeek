@@ -11,7 +11,9 @@
         /// <summary>
         /// Returns the the current status to show to the player
         /// </summary>
-        public string Status => throw new NotImplementedException();
+        public string Status => $"You are in the {CurrentLocation}. You see the following exits:" +
+            Environment.NewLine +
+            $" - {string.Join(Environment.NewLine + " - ", CurrentLocation.ExitList)}";
 
         /// <summary>
         /// A prompt to display to the player
@@ -29,7 +31,9 @@
         /// <returns>True if the player can move in that direction, false oterwise</returns>
         public bool Move(Direction direction)
         {
-            throw new NotImplementedException();
+            var oldLocation = CurrentLocation;
+            CurrentLocation = CurrentLocation.GetExit(direction);
+            return (oldLocation != CurrentLocation);
         }
 
         /// <summary>
@@ -39,7 +43,15 @@
         /// <returns>The results of parsing the input</returns>
         public string ParseInput(string input)
         {
-            throw new NotImplementedException();
+            var results = "That's not a valid direction";
+            if (Enum.TryParse(typeof(Direction), input, out object direction))
+            {
+                if (!Move((Direction)direction))
+                    results = "There's no exit in that direction";
+                else
+                    results = $"Moving {direction}";
+            }
+            return results;
         }
     }
 }
