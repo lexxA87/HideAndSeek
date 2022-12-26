@@ -45,13 +45,22 @@
             .Select(keyValuePair => $"the {keyValuePair.Value} is {DescribeDirection(keyValuePair.Key)}");
 
         /// <summary>
+        /// Adds a return exit to a connecting location
+        /// </summary>
+        /// <param name="direction">Direction of the connecting location</param>
+        /// <param name="connectingLocation">Location to add the return exit to</param>
+        private void AddReturnExit(Direction direction, Location connectingLocation) =>
+         Exits.Add((Direction)(-(int)direction), connectingLocation);
+
+        /// <summary>
         /// Adds an exit to this location
         /// </summary>
         /// <param name="direction">Direction of the connecting location</param>
         /// <param name="connectingLocation">Connecting location to add</param>
         public void AddExit(Direction direction, Location connectingLocation)
         {
-            throw new NotImplementedException();
+            Exits.Add(direction, connectingLocation);
+            connectingLocation.AddReturnExit(direction, this);
         }
 
         /// <summary>
@@ -59,6 +68,6 @@
         /// </summary>
         /// <param name="direction">Direciton of the exit location</param>
         /// <returns>The exit location, or this if there is no exit in that direction</returns>
-        public Location GetExit(Direction direction) => throw new NotImplementedException();
+        public Location GetExit(Direction direction) => Exits.ContainsKey(direction) ? Exits[direction] : this;
     }
 }

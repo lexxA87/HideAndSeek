@@ -28,10 +28,10 @@ namespace HideAndSeekTests
             center.AddExit(Direction.Northwest, new Location("Northwest Room"));
             center.AddExit(Direction.Southwest, new Location("Southwest Room"));
             center.AddExit(Direction.Southeast, new Location("Southeast Room"));
-            center.AddExit(Direction.Up, new Location("Up Room"));
-            center.AddExit(Direction.Down, new Location("Down Room"));
-            center.AddExit(Direction.In, new Location("In Room"));
-            center.AddExit(Direction.Out, new Location("Out Room"));
+            center.AddExit(Direction.Up, new Location("Upper Room"));
+            center.AddExit(Direction.Down, new Location("Lower Room"));
+            center.AddExit(Direction.In, new Location("Inside Room"));
+            center.AddExit(Direction.Out, new Location("Outside Room"));
 
             Assert.AreEqual(12, center.ExitList.Count());
 
@@ -43,6 +43,10 @@ namespace HideAndSeekTests
         public void TestGetExit()
         {
             // This test will make sure the GetExit method works
+            var eastRoom = center.GetExit(Direction.East);
+            Assert.AreEqual("East Room", eastRoom.Name);
+            Assert.AreSame(center, eastRoom.GetExit(Direction.West));
+            Assert.AreSame(eastRoom, eastRoom.GetExit(Direction.Up));
         }
         /// <summary>
         /// Validates that the exit lists are working
@@ -51,6 +55,22 @@ namespace HideAndSeekTests
         public void TestExitList()
         {
             // This test will make sure the ExitList property works
+            CollectionAssert.AreEqual(
+                new List<string>() {
+                    "the North Room is to the North",
+                   "the South Room is to the South",
+                   "the East Room is to the East",
+                   "the West Room is to the West",
+                   "the Northeast Room is to the Northeast",
+                   "the Southwest Room is to the Southwest",
+                   "the Southeast Room is to the Southeast",
+                   "the Northwest Room is to the Northwest",
+                   "the Upper Room is Up",
+                   "the Lower Room is Down",
+                   "the Inside Room is In",
+                   "the Outside Room is Out",
+                },
+                center.ExitList.ToList());
         }
         /// <summary>
         /// Validates that each room’s name and return exit is created correctly
