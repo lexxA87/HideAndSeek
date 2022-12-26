@@ -2,7 +2,36 @@
 {
     public static class House
     {
+        public static Random Random = new();
+
         public static readonly Location Entry;
+
+        private static IEnumerable<Location> locations;
+
+        /// <summary>
+        /// Gets a location by name
+        /// </summary>
+        /// <param name="name">The name of the location to find</param>
+        /// <returns>The location, or Entry if no location by that name was found</returns>
+        public static Location GetLocationByName(string name)
+        {
+            var found = locations.Where(l => l.Name == name);
+            return found.Count() > 0 ? found.First() : Entry;
+        }
+
+        /// <summary>
+        /// Gets a random exit from the location
+        /// </summary>
+        /// <param name="location">Location to get the random exit from</param>
+        /// <returns>One of the locatin's exits selected randomly</returns>
+        public static Location RandomExit(Location location) =>
+            GetLocationByName(
+                location
+                    .Exits
+                    .OrderBy(exit => exit.Value.Name)
+                    .Select(exit => exit.Value.Name)
+                    .Skip(Random.Next(0, location.ExitList.Count()))
+                    .First());
 
         static House()
         {
@@ -40,6 +69,36 @@
             landing.AddExit(Direction.Up, attic);
 
             masterBedroom.AddExit(Direction.East, masterBath);
+
+            // Add all of the locations to the private locations collection
+            locations = new List<Location>() {
+                Entry,
+                hallway,
+                kitchen,
+                bathroom,
+                livingRoom,
+                landing,
+                masterBedroom,
+                secondBathroom,
+                kidsRoom,
+                nursery,
+                pantry,
+                attic,
+                garage,
+                attic,
+                masterBath,
+            };
+        }
+
+        /// <summary>
+        /// Check each hiding place to make sure no opponents are still hiding
+        /// to reset the house between rounds (or tests)
+        /// </summary>
+        public static void ClearHidingPlaces()
+        {
+            foreach (var location in locations)
+                if (location is LocationWithHidingPlace hidingPlace)
+                    hidingPlace.CheckHidingPlace();
         }
     }
 }
