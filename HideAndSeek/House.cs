@@ -6,7 +6,7 @@
 
         public static readonly Location Entry;
 
-        private static IEnumerable<Location> locations;
+        private static readonly IEnumerable<Location> locations;
 
         /// <summary>
         /// Gets a location by name
@@ -36,19 +36,19 @@
         static House()
         {
             Entry = new Location("Entry");
-            var garage = new Location("Garage");
             var hallway = new Location("Hallway");
-            var livingRoom = new Location("Living Room");
-            var bathroom = new Location("Bathroom");
-            var kitchen = new Location("Kitchen");
+            var livingRoom = new LocationWithHidingPlace("Living Room", "behind the sofa");
+            var kitchen = new LocationWithHidingPlace("Kitchen", "next to the stove");
+            var bathroom = new LocationWithHidingPlace("Bathroom", "behind the door");
             var landing = new Location("Landing");
-            var kidsRoom = new Location("Kids Room");
-            var pantry = new Location("Pantry");
-            var nursery = new Location("Nursery");
-            var secondBathroom = new Location("Second Bathroom");
-            var masterBedroom = new Location("Master Bedroom");
-            var masterBath = new Location("Master Bath");
-            var attic = new Location("Attic");
+            var masterBedroom = new LocationWithHidingPlace("Master Bedroom", "in the closet");
+            var masterBath = new LocationWithHidingPlace("Master Bath", "in the bathtub");
+            var secondBathroom = new LocationWithHidingPlace("Second Bathroom", "in the shower");
+            var kidsRoom = new LocationWithHidingPlace("Kids Room", "under the bed");
+            var nursery = new LocationWithHidingPlace("Nursery", "under the crib");
+            var pantry = new LocationWithHidingPlace("Pantry", "inside a cabinet");
+            var attic = new LocationWithHidingPlace("Attic", "in a trunk");
+            var garage = new LocationWithHidingPlace("Garage", "behind the car");
 
             // entry 2 exits
             Entry.AddExit(Direction.Out, garage);
