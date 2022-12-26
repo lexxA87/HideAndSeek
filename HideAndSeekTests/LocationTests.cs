@@ -79,6 +79,30 @@ namespace HideAndSeekTests
         public void TestReturnExits()
         {
             // This test will test navigating through the center Location
+            var e = center.GetExit(Direction.East);
+            Assert.AreEqual("East Room", e.ToString());
+            Assert.AreSame(center, e.GetExit(Direction.West));
+            Assert.AreEqual(1, e.ExitList.Count());
+
+            var nw = center.GetExit(Direction.Northwest);
+            Assert.AreEqual("Northwest Room", nw.ToString());
+            Assert.AreSame(center, nw.GetExit(Direction.Southeast));
+
+            var se = center.GetExit(Direction.Southeast);
+            Assert.AreEqual("Southeast Room", se.ToString());
+            Assert.AreSame(center, se.GetExit(Direction.Northwest));
+
+            var s = center.GetExit(Direction.South);
+            Assert.AreEqual("South Room", s.ToString());
+            Assert.AreSame(center, s.GetExit(Direction.North));
+
+            var up = center.GetExit(Direction.Up);
+            Assert.AreEqual("Upper Room", up.ToString());
+            Assert.AreSame(center, up.GetExit(Direction.Down));
+
+            var outside = center.GetExit(Direction.Out);
+            Assert.AreEqual("Outside Room", outside.ToString());
+            Assert.AreSame(center, outside.GetExit(Direction.In));
         }
         /// <summary>
         /// Add a hall to one of the rooms and make sure the hall room’s names
@@ -88,6 +112,15 @@ namespace HideAndSeekTests
         public void TestAddHall()
         {
             // This test will add a hallway with two locations and make sure they work
+            var e = center.GetExit(Direction.East);
+            Assert.AreEqual(1, e.ExitList.Count());
+            var eastHall1 = new Location("East hall 1");
+            var eastHall2 = new Location("East hall 2");
+            e.AddExit(Direction.East, eastHall1);
+            eastHall1.AddExit(Direction.East, eastHall2);
+            Assert.AreEqual(2, e.ExitList.Count());
+            Assert.AreEqual(2, eastHall1.ExitList.Count());
+            Assert.AreEqual(1, eastHall2.ExitList.Count());
         }
     }
 }
