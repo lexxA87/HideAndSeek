@@ -5,7 +5,7 @@
         public readonly string Name;
         public Opponent(string name) => Name = name;
         public override string ToString() => Name;
-        public void Hide()
+        public Location Hide()
         {
             var currentLocation = House.Entry;
 
@@ -19,10 +19,12 @@
                 currentLocation = House.RandomExit(currentLocation);
             }
 
-           (currentLocation as LocationWithHidingPlace).Hide(this);
+            (currentLocation as LocationWithHidingPlace).Hide(this);
 
             System.Diagnostics.Debug.WriteLine(
                 $"{Name} is hiding {(currentLocation as LocationWithHidingPlace).HidingPlace} in the {currentLocation.Name}");
+
+            return currentLocation;
         }
     }
 }

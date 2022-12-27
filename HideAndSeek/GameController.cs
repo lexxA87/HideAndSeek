@@ -1,4 +1,6 @@
-﻿namespace HideAndSeek
+﻿using System.Text.Json;
+
+namespace HideAndSeek
 {
     public class GameController
     {
@@ -56,11 +58,16 @@
         /// </summary>
         public string Prompt => $"{MoveNumber}: Which direction do you want to go (or type 'check'): ";
 
+        /// <summary>
+        /// A Dictionary to keep track of the opponent locations
+        /// </summary>
+        private Dictionary<string, string> opponentLocations = new Dictionary<string, string>();
+
         public GameController()
         {
             House.ClearHidingPlaces();
             foreach (var opponent in Opponents)
-                opponent.Hide();
+                opponentLocations.Add(opponent.Name, opponent.Hide().Name);
 
             CurrentLocation = House.Entry;
         }
@@ -86,7 +93,17 @@
         {
             var results = "That's not a valid direction";
 
-            if (input.ToLower() == "check")
+            if (input.ToLower().StartsWith("save "))
+            {
+                var filename = input.Substring(5);
+                results = Save(filename);
+            }
+            else if (input.ToLower().StartsWith("load "))
+            {
+                var filename = input.Substring(5);
+                results = Load(filename);
+            }
+            else if (input.ToLower() == "check")
             {
                 MoveNumber++;
                 if (CurrentLocation is LocationWithHidingPlace locationWithHidingPlace)
@@ -118,6 +135,62 @@
                 }
             }
             return results;
+        }
+
+        /// <summary>
+        /// Save a game to a file
+        /// </summary>
+        /// <param name="filename">Name of the file (without extension)</param>
+        /// <returns>Results of the save to display to the player</returns>
+        public string Save(string filename)
+        {
+            if (filename.Contains("/") || filename.Contains("\\") || filename.Contains(" "))
+                return "Please enter a filename without slashes or spaces.";
+            else
+            {
+                var savedGame = new SavedGame()
+                {
+                    PlayerLocation = CurrentLocation.Name,
+                    OpponentLocations = opponentLocations,
+                    FoundOpponents = foundOpponents.Select(opponent => opponent.Name).ToList(),
+                    MoveNumber = this.MoveNumber,
+                };
+
+                var json = JsonSerializer.Serialize<SavedGame>(savedGame);
+                File.WriteAllText($"{filename}.json", json);
+                return $"Saved current game to {filename}";
+            }
+        }
+
+        /// <summary>
+        /// Load a game from a file
+        /// </summary>
+        /// <param name="filename">Name of the file (without extension)</param>
+        /// <returns>Results of the save to display to the player</returns>
+        public string Load(string filename)
+        {
+            if (filename.Contains("/") || filename.Contains("\\") || filename.Contains(" "))
+                return "Please enter a filename without slashes or spaces.";
+            else if (!File.Exists($"{filename}.json"))
+                return "That save file does not exist.";
+            else
+            {
+                var json = File.ReadAllText($"{filename}.json");
+                var savedGame = JsonSerializer.Deserialize<SavedGame>(json);
+                House.ClearHidingPlaces();
+                CurrentLocation = House.GetLocationByName(savedGame.PlayerLocation);
+                foreach (var opponentName in savedGame.OpponentLocations.Keys)
+                {
+                    var opponent = new Opponent(opponentName);
+                    var locationName = savedGame.OpponentLocations[opponentName];
+                    if (House.GetLocationByName(locationName) is LocationWithHidingPlace location)
+                        location.Hide(opponent);
+                }
+                foundOpponents.Clear();
+                foundOpponents.AddRange(savedGame.FoundOpponents.Select(name => new Opponent(name)));
+                MoveNumber = savedGame.MoveNumber;
+                return $"Loaded game from {filename}";
+            }
         }
     }
 }
